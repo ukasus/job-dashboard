@@ -1,6 +1,5 @@
 // src/components/MainTable.tsx
-import React, { useState, useEffect } from 'react';
-import Papa from 'papaparse';
+import React from 'react';
 import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import useCsvData from '../hooks/useCsvData'; 
@@ -24,7 +23,7 @@ interface MainTableProps {
 }
 
 const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
-    const { data, yearData, loading, error } = useCsvData();
+    const {yearData, loading } = useCsvData();
     
     if (loading) {
         return <div>Loading...</div>;

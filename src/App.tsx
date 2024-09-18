@@ -1,9 +1,8 @@
 // src/App.tsx
 import React, { useState } from 'react';
-import { Layout, Card, Typography, Row, Col } from 'antd';
+import { Layout, Card, Row, Col } from 'antd';
 import MainTable from './components/MainTable';
 import LineChart from './components/LineChart';
-import {JobData} from './components/MainTable';
 import useCsvData from './hooks/useCsvData';
 
 // Define interfaces for the data types
@@ -12,14 +11,8 @@ interface JobTitleData {
     count: number;
 }
 
-interface YearData {
-    [x: string]: any;
-    year: string;
-    totalJobs: number;
-}
 
 const { Header, Content, Footer } = Layout;
-const { Title } = Typography;
 
 const App: React.FC = () => {
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
