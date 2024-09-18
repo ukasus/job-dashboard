@@ -27,7 +27,7 @@ const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
 
     useEffect(() => {
         // Replace with your CSV file path
-        Papa.parse('../../salaries.csv', {
+        Papa.parse('\salaries.csv', {
             download: true,
             header: true,
             complete: (results) => {
