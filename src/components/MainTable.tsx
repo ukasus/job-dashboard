@@ -5,9 +5,10 @@ import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 
 // Define interfaces for the props and the data
-interface JobData {
+export interface JobData {
     work_year: string;
     salary_in_usd: string;
+    job_title: string;
     [key: string]: any;  // To allow other unknown properties
 }
 
@@ -18,7 +19,7 @@ interface YearData {
 }
 
 interface MainTableProps {
-    onRowClick: (year: string) => void;
+    onRowClick: (year: string, data:JobData[]) => void;
 }
 
 const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
@@ -33,6 +34,7 @@ const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
             complete: (results) => {
                 setData(results.data);
                 processYearData(results.data);
+                
             }
         });
     }, []);
@@ -47,17 +49,16 @@ const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
             if (yearMap[year]) {
                 yearMap[year].jobs += 1;
                 yearMap[year].totalSalary += salary;
+
             } else {
                 yearMap[year] = { jobs: 1, totalSalary: salary };
             }
         });
-
-        const yearArray = Object.keys(yearMap).map((year) => ({
+        const yearArray = Object.keys(yearMap).filter((year)=> year && year.trim().length>0).map((year) => ({
             year: year,
             totalJobs: yearMap[year].jobs,
             avgSalary: (yearMap[year].totalSalary / yearMap[year].jobs).toFixed(2),
         }));
-
         setYearData(yearArray);
     };
 
@@ -73,7 +74,7 @@ const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
             dataSource={yearData}
             rowKey="year"
             onRow={(record) => ({
-                onClick: () => onRowClick(record.year),
+                onClick: () => onRowClick(record.year, data),
             })}
             pagination={false}
         />

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Layout, Card, Typography, Row, Col } from 'antd';
 import MainTable from './components/MainTable';
 import LineChart from './components/LineChart';
+import {JobData} from './components/MainTable';
 
 // Define interfaces for the data types
 interface JobTitleData {
@@ -24,14 +25,13 @@ const App: React.FC = () => {
     const [jobTitles, setJobTitles] = useState<JobTitleData[]>([]);
     const [yearData, setYearData] = useState<YearData[]>([]); // Populate this from MainTable data
 
-    const handleRowClick = (year: string) => {
+    const handleRowClick = (year: string,data:JobData[]) => {
         setSelectedYear(year);
         // Fetch job title data for that year
-        const jobsForYear = yearData.filter((row) => row.year === year); // Adjust as needed for job title data
+        const jobsForYear = data.filter((row) => row.work_year === year); // Adjust as needed for job title data
         const jobCountMap: { [key: string]: number } = {};
-
         jobsForYear.forEach((row) => {
-            const title = row.jobTitle;
+            const title = row.job_title;
             if (jobCountMap[title]) {
                 jobCountMap[title] += 1;
             } else {
@@ -43,7 +43,7 @@ const App: React.FC = () => {
             jobTitle: title,
             count: jobCountMap[title],
         }));
-
+        //console.log(jobCountMap);
         setJobTitles(jobTitlesArray);
     };
 
@@ -61,7 +61,7 @@ const App: React.FC = () => {
                         </Card>
                     </Col>
                     <Col span={8}>
-                        {/* <LineChart yearData={yearData} /> */}
+                        <LineChart yearData={yearData} />
                     </Col>
                 </Row>
 

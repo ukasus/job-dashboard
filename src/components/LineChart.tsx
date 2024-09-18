@@ -14,6 +14,7 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ yearData }) => {
+    console.log(yearData);
     const chartData = {
         labels: yearData.map((d) => d.year),
         datasets: [
@@ -28,7 +29,7 @@ const LineChart: React.FC<LineChartProps> = ({ yearData }) => {
 
     return (
         <Card title="Job Trends Over Time" bordered={false} style={{ width: '100%', marginTop: '20px' }}>
-            <Line data={chartData} />
+            {/* <Line data={chartData} /> */}
         </Card>
     );
 };
