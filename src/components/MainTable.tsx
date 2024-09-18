@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import { Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
+import useCsvData from '../hooks/useCsvData'; 
 
 // Define interfaces for the props and the data
 export interface JobData {
@@ -19,48 +20,16 @@ interface YearData {
 }
 
 interface MainTableProps {
-    onRowClick: (year: string, data:JobData[]) => void;
+    onRowClick: (year: string) => void;
 }
 
 const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
-    const [data, setData] = useState<JobData[]>([]);
-    const [yearData, setYearData] = useState<YearData[]>([]);
+    const { data, yearData, loading, error } = useCsvData();
+    
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-    useEffect(() => {
-        // Replace with your CSV file path
-        Papa.parse('\salaries.csv', {
-            download: true,
-            header: true,
-            complete: (results) => {
-                setData(results.data);
-                processYearData(results.data);
-                
-            }
-        });
-    }, []);
-
-    const processYearData = (data: JobData[]) => {
-        const yearMap: { [key: string]: { jobs: number; totalSalary: number } } = {};
-
-        data.forEach((row) => {
-            const year = row.work_year;
-            const salary = parseFloat(row.salary_in_usd);
-            
-            if (yearMap[year]) {
-                yearMap[year].jobs += 1;
-                yearMap[year].totalSalary += salary;
-
-            } else {
-                yearMap[year] = { jobs: 1, totalSalary: salary };
-            }
-        });
-        const yearArray = Object.keys(yearMap).filter((year)=> year && year.trim().length>0).map((year) => ({
-            year: year,
-            totalJobs: yearMap[year].jobs,
-            avgSalary: (yearMap[year].totalSalary / yearMap[year].jobs).toFixed(2),
-        }));
-        setYearData(yearArray);
-    };
 
     const columns: ColumnsType<YearData> = [
         { title: 'Year', dataIndex: 'year', key: 'year', sorter: (a, b) => parseInt(a.year) - parseInt(b.year) },
@@ -68,13 +37,14 @@ const MainTable: React.FC<MainTableProps> = ({ onRowClick }) => {
         { title: 'Average Salary (USD)', dataIndex: 'avgSalary', key: 'avgSalary', sorter: (a, b) => parseFloat(a.avgSalary) - parseFloat(b.avgSalary) },
     ];
 
+
     return (
         <Table<YearData>
             columns={columns}
             dataSource={yearData}
             rowKey="year"
             onRow={(record) => ({
-                onClick: () => onRowClick(record.year, data),
+                onClick: () => onRowClick(record.year),
             })}
             pagination={false}
         />

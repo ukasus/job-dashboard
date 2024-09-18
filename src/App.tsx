@@ -4,6 +4,7 @@ import { Layout, Card, Typography, Row, Col } from 'antd';
 import MainTable from './components/MainTable';
 import LineChart from './components/LineChart';
 import {JobData} from './components/MainTable';
+import useCsvData from './hooks/useCsvData';
 
 // Define interfaces for the data types
 interface JobTitleData {
@@ -23,9 +24,9 @@ const { Title } = Typography;
 const App: React.FC = () => {
     const [selectedYear, setSelectedYear] = useState<string | null>(null);
     const [jobTitles, setJobTitles] = useState<JobTitleData[]>([]);
-    const [yearData, setYearData] = useState<YearData[]>([]); // Populate this from MainTable data
+    const { data, yearData } = useCsvData(); // Populate this from MainTable data
 
-    const handleRowClick = (year: string,data:JobData[]) => {
+    const handleRowClick = (year: string) => {
         setSelectedYear(year);
         // Fetch job title data for that year
         const jobsForYear = data.filter((row) => row.work_year === year); // Adjust as needed for job title data
@@ -43,7 +44,6 @@ const App: React.FC = () => {
             jobTitle: title,
             count: jobCountMap[title],
         }));
-        //console.log(jobCountMap);
         setJobTitles(jobTitlesArray);
     };
 
